@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 import './App.css';
+import {Scatter } from 'react-chartjs-2';
+const App = () => {
+    const [graphData, setGraphData] = useState([]);
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    useEffect(() => {
+        const eventHandler = response => {
+            setGraphData(response.data)
+        };
+        const promise = axios.get('http://localhost:3001/');
+        promise.then(eventHandler)
+    }, []);
+
+    return (
+        <div className="App">
+            <header className="App-header">
+                <div>
+                    <Scatter data={{
+                        datasets: [{
+                            label: 'Algorithmic Complexity',
+                            borderColor: "#6610f2",
+                            data: graphData
+                        }]
+                    }}/>
+                </div>
+            </header>
+        </div>
+    );
+};
 
 export default App;
